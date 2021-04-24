@@ -5,7 +5,6 @@ using std::cout;
 using std::cin;
 using std::endl;
 
-void ASCII();
 void Input(char str[], const int n);
 int StringLength(char str[]);      //Выводит количество символов
 void to_upper(char str[]);         //Переводит строку в верхний регистр
@@ -14,11 +13,11 @@ void capitalize(char str[]);       //Первую букву каждого слова в предложении де
 void shrink(char str[]);           //Удаляет из строки лишние пробелы, например:
 								   //Хорошо      живет   на  свете   Винни   Пух
 bool is_palindrome(char str[]);    //Определяет, является ли строка палиндромом
-//bool is_int_number(char str[]);  //Определяет, является ли строка целым числом
+bool is_int_number(char str[]);    //Определяет, является ли строка целым числом
 								   //Строка является целым числом, когда она состоит только из цифр.
-//int to_int_number(char str[]);   //Если строка - целое число, функция вернет его числовое значение.
+int to_int_number(char str[]);   //Если строка - целое число, функция вернет его числовое значение.
 
-//bool is_bin_number(char str[]);  //Проверяет, является ли строка двоичным числом
+bool is_bin_number(char str[]);  //Проверяет, является ли строка двоичным числом
 //int bin_to_dec(char str[]);      //Если строка - двоичное число, функция вернет его десятичное значение.
 //??? dec_to_bin(int decimal);     //Функция принимает десятичное число, и возвращает его двоичное значение.
 
@@ -44,28 +43,31 @@ void main()
 	setlocale(LC_ALL, "ru");
 	const int n = 150;
 	char str[n] = {};
-	cout << "Введите строку: ";
+	cout << "...Введите строку: ";
 
 	Input(str, n);
 
-	cout << "...Line Length: " << StringLength(str) << " characters" << endl;
+	cout << "......Line Length: " << StringLength(str) << " characters" << endl;
 
 	to_upper(str);
-	cout << "......to_upper: " << str << endl;
+	cout << ".........to_upper: " << str << endl;
 
-	to_lower(str);
-	cout << "......to_lower: " << str << endl;
+	cout << "...........shrink: " << str << endl;
 
 	capitalize(str);
-	cout << "....capitalize: " << str << endl;
+	cout << ".......capitalize: " << str << endl;
 
-	shrink(str);
-	cout << "........shrink: " << str << endl;
+	cout << ".......palindrome: ";
+	cout << (is_palindrome(str) == 0 ? "Строка не является палиндромом" : "Строка является палиндромом") << endl;
+	//cout << "Строка " << (is_palindrome(str) ? "" : "не ") << "является палиндромом" << endl;
 
-	cout << "....palindrome: ";
-	(is_palindrome(str) == 0) ? cout << "Строка не является палиндромом" << endl : cout << "Строка является палиндромом" << endl;
-	cout << is_palindrome(str) << endl;
-	cout << str << endl;
+	cout << "....is_int_number: ";
+	cout << (is_int_number(str) == 0 ? "Строка не является числом" : "Строка является числом") << endl;
+
+	cout << "....to_int_number: " << to_int_number(str) << endl;
+
+	cout << "....is_bin_number: ";
+	cout << (is_bin_number(str) == 0 ? "Строка не является двоичным числом" : "Строка является двоичным числом") << endl;
 }
 
 void Input(char str[], const int n)
@@ -154,6 +156,41 @@ bool is_palindrome(char str[])
 		{
 			return false;
 		}
+	}
+	return true;
+}
+
+bool is_int_number(char str[])
+{
+	for (int i = 0; str[i]; i++)
+	{
+		if (!(str[i] >= '0' && str[i] <= '9'))
+			return false;
+	}
+	return true;
+}
+
+int to_int_number(char str[])
+{
+	if (!is_int_number(str)) return 0;
+	int num = 0;
+	for (int i = 0; str[i]; i++)
+	{
+		if (str[i] != ' ')
+		{
+			num *= 10;
+			num += str[i] - 48;
+		}
+	}
+	return num;
+}
+
+bool is_bin_number(char str[])
+{
+	for (int i = 0; str[i]; i++)
+	{
+		if (str[i] != '0' && str[i] != '1' && str[i] != ' ')
+			return false;
 	}
 	return true;
 }

@@ -1,4 +1,5 @@
 ﻿#include<iostream>
+#include<cctype>
 #include<Windows.h>
 using namespace std;
 using std::cout;
@@ -52,7 +53,7 @@ void main()
 
 	Input(str, n);
 
-	cout << "......Line Length: " << StringLength(str) << " characters" << endl;
+	/*cout << "......Line Length: " << StringLength(str) << " characters" << endl;
 
 	to_upper(str);
 	cout << ".........to_upper: " << str << endl;
@@ -88,7 +89,10 @@ void main()
 	cout << bin_to_dec_two(str) << endl;
 
 	cout << "....is_hex_number: ";
-	cout << "Строка " << (is_hex_number(str) ? "" : "не ") << "является шестнадцатеричным числом" << endl;
+	cout << "Строка " << (is_hex_number(str) ? "" : "не ") << "является шестнадцатеричным числом" << endl;*/
+
+	cout << ".......hex_to_dec: ";
+	cout << str << "(hex) = " << hex_to_dec(str) << "(dec)" << endl;
 }
 
 void Input(char str[], const int n)
@@ -366,17 +370,18 @@ int hex_to_dec(char str[])
 	if (!is_hex_number(str))return 0;
 	int n = StringLength(str);
 	char* buffer = new char[n + 1]{};
-	strcpy(buffer, str);
+	strcpy_s(buffer, n + 1, str); //Копирует строку str в сторку buffer
+	to_upper(buffer);
 	int decimal = 0;
 	int weight = 1;
 	for (int i = n - 1; i >= 0; i--)
 	{
-		if (str[i] != ' ')
+		if (buffer[i] == 'x' || buffer[i] == 'X')break;
+		if (buffer[i] != ' ')
 		{
-			decimal += (str[i] - 48) * weight;
+			decimal += (buffer[i] - (isdigit(buffer[i]) ? 48 : 55))*weight;
 			weight *= 16;
 		}
-		if (str[i] == 'x' || str[i] == 'X')break;
 	}
 	return decimal;
 }

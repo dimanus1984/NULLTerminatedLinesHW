@@ -25,29 +25,19 @@ int to_int_number(char str[]);     //Если строка - целое числ
 bool is_bin_number(char str[]);    //Проверяет, является ли строка двоичным числом
 int bin_to_dec(char str[]);        //Если строка - двоичное число, функция вернет его десятичное значение.
 int bin_to_dec_two(char str[]);
-//??? dec_to_bin(int decimal);     //Функция принимает десятичное число, и возвращает его двоичное значение.
+char* dec_to_bin(int decimal);     //Функция принимает десятичное число, и возвращает его двоичное значение.
 
 bool is_hex_number(char str[]);    //Проверяет, является ли функция шестнадцатеричным числом
 int hex_to_dec(char str[]);        //Если строка - шестнадцатеричное число, функция вернет его десятичное значение.
 //??? dec_to_hex(int decimal);     //Функция принимает десятичное число, и возвращает его Шестнадцатеричное значение.
 
-//bool is_mac_address(char str[]); //Проверяет, является ли строка MAC-адресом
-//bool is_ip_address(char str[]);  //Проверяет, является ли строка IP-адресом
-
-//Hardcore:
-//Если строка - целое число, функция вернет его письменное значение кириллицей.
-
-/* *** Строки ***
-* Строка в языке С представляет собой массив элементов типа char.
-* Последним элементом этого массива всегда является ASCII - символ с кодом 0 '\0'
-* Этот ноль называют терминирующим, т.е. он показывает конец строки.
-* Строки в языке С называют NULL Terminated Lines или строки заканчивающиеся нулем.
-*/
+bool is_ip_address(char str[]);    //Проверяет, является ли строка IP-адресом
+bool is_mac_address(char str[]);   //Проверяет, является ли строка MAC-адресом
 
 void main()
 {
 	setlocale(LC_ALL, "ru");
-	const int n = 150;
+	const int n = 256;
 	char str[n] = {};
 	cout << "...Введите строку: ";
 
@@ -89,10 +79,20 @@ void main()
 	cout << bin_to_dec_two(str) << endl;
 
 	cout << "....is_hex_number: ";
-	cout << "Строка " << (is_hex_number(str) ? "" : "не ") << "является шестнадцатеричным числом" << endl;*/
+	cout << "Строка " << (is_hex_number(str) ? "" : "не ") << "является шестнадцатеричным числом" << endl;
 
 	cout << ".......hex_to_dec: ";
-	cout << str << "(hex) = " << hex_to_dec(str) << "(dec)" << endl;
+	cout << str << "(hex) = " << hex_to_dec(str) << "(dec)" << endl;*/
+
+	//int decimal;
+	//cout << "Введите десятичное число: "; cin >> decimal;
+	//cout << dec_to_bin(decimal) << endl;
+
+	cout << "....is_ip_address: ";
+	cout << "Строка " << (is_ip_address(str) ? "" : "не ") << "является IPv4-адресом" << endl;
+
+	cout << "...is_mac_address: ";
+	cout << "Строка " << (is_mac_address(str) ? "" : "не ") << "является MAC-адресом" << endl;
 }
 
 void Input(char str[], const int n)
@@ -384,4 +384,164 @@ int hex_to_dec(char str[])
 		}
 	}
 	return decimal;
+}
+
+char* dec_to_bin(int decimal)
+{
+	//1) Определим количество двоичных разрядов:
+	int capacity = 0;
+	//Создаем копию
+	int buffer = decimal;
+	for (; buffer > 0; capacity++)
+	{
+		buffer /= 2;
+		if (capacity % 4 == 0)capacity++;
+	}
+	//2) Выделяем память под двоичное число:
+	//Указатель на char
+	char* bin = new char[capacity + 1]{};
+	//3) Получаем разряды двоичного числа, и сохраняем их в строку
+	for (int i = 0; decimal; i++)
+	{
+		if (i % 4 == 0)
+		{
+			bin[i] = ' ';
+		}
+		else
+		{
+			bin[i] = decimal % 2 + '0'; //Получаем младший разряд числа
+			decimal /= 2;               //Убираем младший разряд из числа
+		}
+	}
+	return bin;
+}
+
+bool is_ip_address(char str[])
+{
+	bool is_ip = true;
+
+	int len_group = 4;
+	char* one_group = new char[len_group] {};
+	char* two_group = new char[len_group] {};
+	char* three_group = new char[len_group] {};
+	char* four_group = new char[len_group] {};
+
+	int point_counter = 0;
+	int digit_counter = 0;
+
+	if (str[0] == '.') //Если в начале строки стоит точка
+	{
+		is_ip = false;
+	}
+
+	for (int i = 0; str[i]; i++)
+	{
+		if (!is_ip) break; //Выход из цикла по какой-нибудь ошибке...
+
+		if (str[i] != '.' && !(str[i] >= '0' && str[i] <= '9')) //Встреча недопустимого символа
+		{
+			is_ip = false;
+			break;
+		}
+
+		if (str[i] == '.') //Переход по группам
+		{
+			if (++point_counter > 3) //В строке больше трёх точек
+			{
+				is_ip = false;
+				break;
+			}
+			digit_counter = 0;
+
+			continue;
+		}
+
+		if (digit_counter > 2) //В группе больше трех символов
+		{
+			is_ip = false;
+			break;
+		}
+
+		switch (point_counter)
+		{
+		case 0:
+			one_group[digit_counter++] = str[i];
+			break;
+		case 1:
+			two_group[digit_counter++] = str[i];
+			break;
+		case 2:
+			three_group[digit_counter++] = str[i];
+			break;
+		case 3:
+			four_group[digit_counter++] = str[i];
+			break;
+		default:
+			break;
+		}
+	}
+
+	if (is_ip && point_counter == 3 &&
+		is_int_number(one_group) &&
+		is_int_number(two_group) &&
+		is_int_number(three_group) &&
+		is_int_number(four_group))
+	{
+		if ((to_int_number(one_group) >= 0 && to_int_number(one_group) <= 255) &&
+			(to_int_number(two_group) >= 0 && to_int_number(two_group) <= 255) &&
+			(to_int_number(three_group) >= 0 && to_int_number(three_group) <= 255) &&
+			(to_int_number(four_group) >= 0 && to_int_number(four_group) <= 255))
+		{
+			is_ip = true;
+		}
+		else
+		{
+			is_ip = false;
+		}
+	}
+	else
+	{
+		is_ip = false; //Если одна из групп цифр не является целым числом.
+	}
+
+	//Удалить временные динамические массивы:
+	delete[] one_group;
+	delete[] two_group;
+	delete[] three_group;
+	delete[] four_group;
+
+	return is_ip;
+}
+
+bool is_mac_address(char str[])
+{
+	int num = StringLength(str);
+	bool flag = true;
+	for (int i = 0; i < num; i++)
+	{
+		if (str[i] == ' ')
+		{
+			for (int j = i; j < num; j++) str[j] = str[j + 1];
+			i--;
+		}
+
+	}
+	num = StringLength(str);
+	if (num == 17)
+	{
+		for (int i = 0; i < num; i++)
+		{
+			if ((i + 1) % 3 != 0)
+			{
+				if (((str[i] < 48) || (str[i] > 58)) && ((str[i] < 65) || (str[i] > 70)) && ((str[i] < 97) || (str[i] > 102))) flag = false;
+			}
+			else if ((i + 1) % 3 == 0)
+			{
+				if (str[i] != '-') flag = false;
+			}
+		}
+	}
+	else flag = false;
+
+	return flag;
 }

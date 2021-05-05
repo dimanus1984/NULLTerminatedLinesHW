@@ -9,7 +9,9 @@ using std::endl;
 void Input(char str[], const int n);
 int StringLength(char str[]);      //Выводит количество символов
 void to_upper(char str[]);         //Переводит строку в верхний регистр
+void to_upper_two(char str[]);
 void to_lower(char str[]);         //Переводит строку в нижний регистр
+void to_lower_two(char str[]);
 void capitalize(char str[]);       //Первую букву каждого слова в предложении делает заглавной
 void shrink(char str[]);           //Удаляет из строки лишние пробелы, например:
 void shrink_two(char str[]);	   //Хорошо      живет   на  свете   Винни   Пух
@@ -19,7 +21,7 @@ bool is_palindrome(char str[]);    //Определяет, является ли
 bool is_palindrome_two(char str[]);
 
 bool is_int_number(char str[]);    //Определяет, является ли строка целым числом
-								   //Строка является целым числом, когда она состоит только из цифр.
+void is_int_number_two(char str[]); //Строка является целым числом, когда она состоит только из цифр.
 int to_int_number(char str[]);     //Если строка - целое число, функция вернет его числовое значение.
 
 bool is_bin_number(char str[]);    //Проверяет, является ли строка двоичным числом
@@ -88,6 +90,11 @@ void main()
 	//cout << "Введите десятичное число: "; cin >> decimal;
 	//cout << dec_to_bin(decimal) << endl;
 
+	cout << "..........toupper: "; to_upper_two(str); cout << endl;
+	cout << "..........tolower: "; to_lower_two(str); cout << endl;
+
+	cout << "is_int_number_two: "; is_int_number_two(str);
+
 	cout << "....is_ip_address: ";
 	cout << "Строка " << (is_ip_address(str) ? "" : "не ") << "является IPv4-адресом" << endl;
 
@@ -122,6 +129,14 @@ void to_upper(char str[])
 	}
 }
 
+void to_upper_two(char str[])
+{
+	for (int i = 0; str[i]; i++)
+	{
+		putchar(toupper(str[i]));
+	}
+}
+
 void to_lower(char str[])
 {
 	for (int i = 0; str[i]; i++)
@@ -132,6 +147,14 @@ void to_lower(char str[])
 				str[i] >= 'А' && str[i] <= 'Я')
 				str[i] += 32;
 		}
+	}
+}
+
+void to_lower_two(char str[])
+{
+	for (int i = 0; str[i]; i++)
+	{
+		putchar(tolower(str[i]));
 	}
 }
 
@@ -274,6 +297,16 @@ bool is_int_number(char str[])
 	}
 	//Если же отрицание не выполнилось, то все элементы строки являются цифрами
 	return true;
+}
+
+void is_int_number_two(char str[])
+{
+	int value = 0;
+	for (int i = 0; str[i]; i++)
+	{
+		value = atoi(str);
+	}
+	cout << value << endl;
 }
 
 int to_int_number(char str[])

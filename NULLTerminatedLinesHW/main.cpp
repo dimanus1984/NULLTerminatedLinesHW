@@ -23,14 +23,17 @@ bool is_palindrome_two(char str[]);
 bool is_int_number(char str[]);    //Определяет, является ли строка целым числом
 void is_int_number_two(char str[]); //Строка является целым числом, когда она состоит только из цифр.
 int to_int_number(char str[]);     //Если строка - целое число, функция вернет его числовое значение.
+int to_int_number_two(char str[]);
 
 bool is_bin_number(char str[]);    //Проверяет, является ли строка двоичным числом
 int bin_to_dec(char str[]);        //Если строка - двоичное число, функция вернет его десятичное значение.
 int bin_to_dec_two(char str[]);
+int bin_to_dec_three(char str[]);
 char* dec_to_bin(int decimal);     //Функция принимает десятичное число, и возвращает его двоичное значение.
 
 bool is_hex_number(char str[]);    //Проверяет, является ли функция шестнадцатеричным числом
 int hex_to_dec(char str[]);        //Если строка - шестнадцатеричное число, функция вернет его десятичное значение.
+int hex_to_dec_two(char str[]);
 //??? dec_to_hex(int decimal);     //Функция принимает десятичное число, и возвращает его Шестнадцатеричное значение.
 
 bool is_ip_address(char str[]);    //Проверяет, является ли строка IP-адресом
@@ -94,6 +97,13 @@ void main()
 	cout << "..........tolower: "; to_lower_two(str); cout << endl;
 
 	cout << "is_int_number_two: "; is_int_number_two(str);
+	cout << "to_int_number_two: " << to_int_number_two(str) << endl;
+
+	cout << ".bin_to_dec_three: ";
+	cout << bin_to_dec_three(str) << endl;
+
+	cout << "...hex_to_dec_two: ";
+	cout << str << "(hex) = " << hex_to_dec_two(str) << "(dec)" << endl;
 
 	cout << "....is_ip_address: ";
 	cout << "Строка " << (is_ip_address(str) ? "" : "не ") << "является IPv4-адресом" << endl;
@@ -307,6 +317,9 @@ void is_int_number_two(char str[])
 		value = atoi(str);
 	}
 	cout << value << endl;
+
+	//cout << atoi(str) << endl;
+	//return atoi(str);
 }
 
 int to_int_number(char str[])
@@ -327,6 +340,11 @@ int to_int_number(char str[])
 		}
 	}
 	return num;
+}
+
+int to_int_number_two(char str[])
+{
+	return atoi(str);
 }
 
 bool is_bin_number(char str[])
@@ -380,6 +398,13 @@ int bin_to_dec_two(char str[])
 	return decimal;
 }
 
+int bin_to_dec_three(char str[])
+{
+	if (!is_bin_number(str)) return 0;
+	char* end;                   //Берет число из строки до первого нечислового символа
+	return strtol(str, &end, 2); //2 - Основание системы счисления
+}
+
 bool is_hex_number(char str[])
 {
 	for (int i = 0; str[i]; i++)
@@ -417,6 +442,13 @@ int hex_to_dec(char str[])
 		}
 	}
 	return decimal;
+}
+
+int hex_to_dec_two(char str[])
+{
+	if (!is_hex_number(str)) return 0;
+	char* end;
+	return strtol(str, &end, 16); //16 - Основание системы счисления
 }
 
 char* dec_to_bin(int decimal)

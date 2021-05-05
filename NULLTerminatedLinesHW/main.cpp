@@ -289,7 +289,7 @@ int to_int_number(char str[])
 		{
 			//тогда значение числа умножаем на 10.
 			num *= 10; //Сдвигаем число на один разряд влево, чтобы освободить младший разряд для следующей цифры
-			//После того как сдвинули число на целый разряд, к num прибавляем значение строки 
+			//После того как сдвинули число на целый разряд, к num прибавляем значение строки
 			num += str[i] - 48; //48 - ASCII-код символа '0'
 		}
 	}
@@ -313,7 +313,7 @@ int bin_to_dec(char str[])      //Перевод двоичного числа �
 {
 	if (!is_bin_number(str))
 		return 0;
-	int decimal = 0;            //Конечное десятичное число 
+	int decimal = 0;            //Конечное десятичное число
 	int weight = 1;             //Весовой коэффициент у младшего разряда - единица.
 	int n = StringLength(str);  //Разрядность числа
 	for (int i = n - 1; i >= 0; i--)
@@ -379,7 +379,7 @@ int hex_to_dec(char str[])
 		if (buffer[i] == 'x' || buffer[i] == 'X')break;
 		if (buffer[i] != ' ')
 		{
-			decimal += (buffer[i] - (isdigit(buffer[i]) ? 48 : 55))*weight;
+			decimal += (buffer[i] - (isdigit(buffer[i]) ? 48 : 55)) * weight;
 			weight *= 16;
 		}
 	}
@@ -429,14 +429,12 @@ bool is_ip_address(char str[])
 	int point_counter = 0;
 	int digit_counter = 0;
 
-	if (str[0] == '.') //Если в начале строки стоит точка
-	{
-		is_ip = false;
-	}
+	//Если в начале строки стоит точка или пробел
+	if (str[0] == '.' || str[0] == ' ')	is_ip = false;
 
 	for (int i = 0; str[i]; i++)
 	{
-		if (!is_ip) break; //Выход из цикла по какой-нибудь ошибке...
+		if (!is_ip) break; //Выход из цикла по какой-нибудь ошибке
 
 		if (str[i] != '.' && !(str[i] >= '0' && str[i] <= '9')) //Встреча недопустимого символа
 		{
@@ -452,7 +450,6 @@ bool is_ip_address(char str[])
 				break;
 			}
 			digit_counter = 0;
-
 			continue;
 		}
 
@@ -464,20 +461,11 @@ bool is_ip_address(char str[])
 
 		switch (point_counter)
 		{
-		case 0:
-			one_group[digit_counter++] = str[i];
-			break;
-		case 1:
-			two_group[digit_counter++] = str[i];
-			break;
-		case 2:
-			three_group[digit_counter++] = str[i];
-			break;
-		case 3:
-			four_group[digit_counter++] = str[i];
-			break;
-		default:
-			break;
+		case 0:	one_group[digit_counter++] = str[i]; break;
+		case 1:	two_group[digit_counter++] = str[i]; break;
+		case 2:	three_group[digit_counter++] = str[i]; break;
+		case 3:	four_group[digit_counter++] = str[i]; break;
+		default: break;
 		}
 	}
 
@@ -494,17 +482,11 @@ bool is_ip_address(char str[])
 		{
 			is_ip = true;
 		}
-		else
-		{
-			is_ip = false;
-		}
+		else is_ip = false;
 	}
-	else
-	{
-		is_ip = false; //Если одна из групп цифр не является целым числом.
-	}
+	else is_ip = false; //Если одна из групп цифр не является целым числом
 
-	//Удалить временные динамические массивы:
+	//Удалить временные динамические массивы
 	delete[] one_group;
 	delete[] two_group;
 	delete[] three_group;
@@ -515,33 +497,17 @@ bool is_ip_address(char str[])
 
 bool is_mac_address(char str[])
 {
-	int num = StringLength(str);
-	bool flag = true;
-	for (int i = 0; i < num; i++)
+	//int num = StringLength(str);
+	if (StringLength(str) != 17)return false;
+	for (int i = 0; str[i]; i++)
 	{
-		if (str[i] == ' ')
-		{
-			for (int j = i; j < num; j++) str[j] = str[j + 1];
-			i--;
-		}
-
+		if (
+			!(str[i] >= '0' && str[i] <= '9') &&
+			!(str[i] >= 'A' && str[i] <= 'F') &&
+			!(str[i] >= 'a' && str[i] <= 'f') &&
+			!((str[i] == '-' || str[i] == ':') && (i + 1) % 3 == 0)
+			)
+			return false;
 	}
-	num = StringLength(str);
-	if (num == 17)
-	{
-		for (int i = 0; i < num; i++)
-		{
-			if ((i + 1) % 3 != 0)
-			{
-				if (((str[i] < 48) || (str[i] > 58)) && ((str[i] < 65) || (str[i] > 70)) && ((str[i] < 97) || (str[i] > 102))) flag = false;
-			}
-			else if ((i + 1) % 3 == 0)
-			{
-				if (str[i] != '-') flag = false;
-			}
-		}
-	}
-	else flag = false;
-
-	return flag;
+	return true;
 }
